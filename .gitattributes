@@ -1,0 +1,12 @@
+# Automatically detect text files
+* text=auto
+
+# Keep scripts and DevOps configuration files using Unix LF line endings
+*.sh text eol=lf
+*.py text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.ini text eol=lf
+*.toml text eol=lf
+*.tf text eol=lf
+*.md text eol=lf

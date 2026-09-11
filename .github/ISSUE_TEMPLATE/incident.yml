@@ -1,0 +1,52 @@
+name: Incident Report
+description: Track a simulated FailSafe service incident
+title: "[INCIDENT] "
+labels:
+  - incident
+body:
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - SEV-1
+        - SEV-2
+        - SEV-3
+    validations:
+      required: true
+
+  - type: input
+    id: service
+    attributes:
+      label: Affected service
+      placeholder: order-service
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: What stopped working and who/what was affected?
+    validations:
+      required: true
+
+  - type: textarea
+    id: detection
+    attributes:
+      label: Detection evidence
+      description: Alert, Grafana panel, log, command output or observation.
+    validations:
+      required: true
+
+  - type: textarea
+    id: timeline
+    attributes:
+      label: Timeline
+      description: Start, detection, mitigation and recovery timestamps.
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Investigation notes
+      description: Commands, hypotheses and findings during response.

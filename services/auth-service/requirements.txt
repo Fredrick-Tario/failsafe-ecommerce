@@ -1,0 +1,5 @@
+fastapi[standard]
+PyJWT
+pwdlib[argon2]
+python-multipart
+email-validator

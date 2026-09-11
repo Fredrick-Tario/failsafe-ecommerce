@@ -7,10 +7,12 @@ __pycache__/
 htmlcov/
 .venv/
 venv/
+.venv-wsl/
 
 # Environment variables and local secrets
 .env
 .env.*
+**/.env
 !.env.example
 *.pem
 *.key
