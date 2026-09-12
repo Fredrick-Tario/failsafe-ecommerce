@@ -1,2 +1,5 @@
 fastapi[standard]
-
+SQLAlchemy
+psycopg[binary]
+python-dotenv
+alembic
