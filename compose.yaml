@@ -1,0 +1,237 @@
+name: failsafe-ecommerce
+
+services:
+
+  # PostgreSQL database service
+  postgres:
+    image: postgres:18
+
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: postgres
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql
+      - ./database/init:/docker-entrypoint-initdb.d:ro
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+    networks:
+      - failsafe-net
+
+  # Auth service
+  auth-service:
+    build:
+      context: ./services/auth-service
+    
+    image: failsafe-auth:0.1.0
+
+    ports:
+      - "8001:8001"
+
+    env_file:
+      - ./services/auth-service/.env
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    healthcheck:
+      test: 
+        [
+        "CMD",
+        "python",
+        "-c",
+        "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/health')"
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+    networks:
+      - failsafe-net
+    
+  # Product service
+  product-service:
+    build:
+      context: ./services/product-service
+
+    image: failsafe-product:0.1.0
+
+    ports:
+      - "8002:8002"
+
+    env_file:
+      - ./services/product-service/.env
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    healthcheck:
+      test: 
+        [
+        "CMD",
+        "python",
+        "-c",
+        "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8002/health')"
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+
+    networks:
+      - failsafe-net
+    
+  # Inventory service
+  inventory-service:
+    build:
+      context: ./services/inventory-service
+
+    image: failsafe-inventory:0.1.0
+
+    ports:
+      - "8003:8003"
+
+    env_file:
+      - ./services/inventory-service/.env
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    healthcheck:
+      test: 
+        [
+        "CMD",
+        "python",
+        "-c",
+        "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8003/health')"
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+    networks:
+      - failsafe-net
+
+  # Order service
+  order-service:
+    build:
+      context: ./services/order-service
+
+    image: failsafe-order:0.1.0
+
+    ports:
+      - "8004:8004"
+
+    env_file:
+      - ./services/order-service/.env
+
+    environment:
+      INVENTORY_URL: http://inventory-service:8003
+      PAYMENT_URL: http://payment-service:8006
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      inventory-service:
+        condition: service_healthy
+      payment-service:
+        condition: service_healthy
+
+    healthcheck:
+      test: 
+        [
+        "CMD",
+        "python",
+        "-c",
+        "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8004/health')"
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+    networks:
+      - failsafe-net
+
+  # Payment service
+  payment-service:
+    build:
+      context: ./services/payment-service
+    
+    image: failsafe-payment:0.1.0
+
+    ports:
+      - "8005:8005"
+
+    env_file:
+      - ./services/payment-service/.env
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    healthcheck:
+      test: 
+        [
+        "CMD",
+        "python",
+        "-c",
+        "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8005/health')"
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+    networks:
+      - failsafe-net
+
+  # Prometheus service
+  prometheus:
+    image: prom/prometheus:v3.13.2
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - failsafe-net
+    
+  # Grafana service
+  grafana:
+    image: grafana/grafana:13.2.1
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      [prometheus]
+    networks:
+      - failsafe-net
+  
+networks:
+  failsafe-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  prometheus_data:
+  grafana_data:
