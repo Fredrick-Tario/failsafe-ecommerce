@@ -200,6 +200,19 @@ services:
     networks:
       - failsafe-net
 
+  # Frontend service
+  frontend-service:
+    build:
+      context: ./frontend
+
+    image: failsafe-frontend:0.1.0
+
+    ports:
+      - "8000:80"
+
+    networks:
+      - failsafe-net
+
   # Prometheus service
   prometheus:
     image: prom/prometheus:v3.13.2
