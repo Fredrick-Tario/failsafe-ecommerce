@@ -39,8 +39,8 @@ jobs:
   unit-tests:
     runs-on: ubuntu-latest
     env:
-      AUTH_SECRET_KEY: ci-test-key
-      DATABASE_URL: sqlite+pysqlite:///:memory:
+        AUTH_SECRET_KEY: ci-test-key
+        DATABASE_URL: sqlite+pysqlite:///:memory:
     
     steps:
       - name: Checkout repository
