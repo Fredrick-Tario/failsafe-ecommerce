@@ -24,6 +24,10 @@ venv/
 crash.log
 *.tfplan
 .terraform.lock.hcl.backup
+*.tfvars
+!*.tfvars.example
+terraform/backend/*.hcl
+!terraform/backend/*.hcl.example 
 
 # Ansible
 *.retry

@@ -1,0 +1,17 @@
+subscription_id     =   "00000000-0000-0000-0000-000000000000"
+location            =   "southeastasia"
+environment         =   "dev"
+unique_suffix       =   "abc123"
+admin_cidr          =   "203.0.113.10/32"
+ssh_public_key_path =   "~/.ssh/id_ed5519.pub"
+
+# Keep every paid workload service disabled for the first cost-safe apply
+enable_acr  =   false 
+enable_aks  =   false
+enable_key_fault =  false
+enable_storage  =   false
+enable_vm   =   false
+
+vnet_cidr   =   "10.10.0.0/16"
+aks_subnet_cidr =   "10.10.1.0/24"
+mgmt_subnet_cidr    =   "10.10.2.0/24"
