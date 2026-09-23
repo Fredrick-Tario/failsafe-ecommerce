@@ -9,7 +9,6 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Product as ProductModel
 
-
 app = FastAPI(
     title="FailSafe Product Service",
     version="0.1.0",
@@ -19,6 +18,7 @@ app = FastAPI(
 # --------------------------------------------------
 # PYDANTIC SCHEMAS
 # --------------------------------------------------
+
 
 class ProductCreate(BaseModel):
     sku: str = Field(
@@ -38,9 +38,7 @@ class ProductCreate(BaseModel):
 
 
 class Product(ProductCreate):
-    model_config = ConfigDict(
-        from_attributes=True
-    )
+    model_config = ConfigDict(from_attributes=True)
 
     id: int
     active: bool = True
@@ -49,6 +47,7 @@ class Product(ProductCreate):
 # --------------------------------------------------
 # HEALTH CHECK
 # --------------------------------------------------
+
 
 @app.get("/health")
 def health() -> dict:
@@ -61,6 +60,7 @@ def health() -> dict:
 # --------------------------------------------------
 # READINESS CHECK
 # --------------------------------------------------
+
 
 @app.get("/ready")
 def ready(
@@ -87,6 +87,7 @@ def ready(
 # LIST PRODUCTS
 # --------------------------------------------------
 
+
 @app.get(
     "/products",
     response_model=list[Product],
@@ -95,14 +96,9 @@ def list_products(
     db: Session = Depends(get_db),
 ) -> list[ProductModel]:
 
-    statement = (
-        select(ProductModel)
-        .order_by(ProductModel.id)
-    )
+    statement = select(ProductModel).order_by(ProductModel.id)
 
-    products = db.scalars(
-        statement
-    ).all()
+    products = db.scalars(statement).all()
 
     return list(products)
 
@@ -110,6 +106,7 @@ def list_products(
 # --------------------------------------------------
 # GET PRODUCT
 # --------------------------------------------------
+
 
 @app.get(
     "/products/{product_id}",
@@ -138,6 +135,7 @@ def get_product(
 # CREATE PRODUCT
 # --------------------------------------------------
 
+
 @app.post(
     "/products",
     response_model=Product,
@@ -148,11 +146,7 @@ def create_product(
     db: Session = Depends(get_db),
 ) -> ProductModel:
 
-    existing_product = db.scalar(
-        select(ProductModel).where(
-            ProductModel.sku == payload.sku
-        )
-    )
+    existing_product = db.scalar(select(ProductModel).where(ProductModel.sku == payload.sku))
 
     if existing_product:
         raise HTTPException(

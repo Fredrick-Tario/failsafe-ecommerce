@@ -7,7 +7,6 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import InventoryItem as InventoryModel
 
-
 app = FastAPI(
     title="FailSafe Inventory Service",
     version="0.1.0",
@@ -18,26 +17,19 @@ app = FastAPI(
 # PYDANTIC SCHEMAS
 # --------------------------------------------------
 
+
 class InventoryItem(BaseModel):
-    model_config = ConfigDict(
-        from_attributes=True
-    )
+    model_config = ConfigDict(from_attributes=True)
 
     product_id: int
 
-    available: int = Field(
-        ge=0
-    )
+    available: int = Field(ge=0)
 
-    reserved: int = Field(
-        ge=0
-    )
+    reserved: int = Field(ge=0)
 
 
 class ReservationRequest(BaseModel):
-    product_id: int = Field(
-        gt=0
-    )
+    product_id: int = Field(gt=0)
 
     quantity: int = Field(
         gt=0,
@@ -48,6 +40,7 @@ class ReservationRequest(BaseModel):
 # --------------------------------------------------
 # HEALTH CHECK
 # --------------------------------------------------
+
 
 @app.get("/health")
 def health() -> dict:
@@ -60,6 +53,7 @@ def health() -> dict:
 # --------------------------------------------------
 # READINESS CHECK
 # --------------------------------------------------
+
 
 @app.get("/ready")
 def ready(
@@ -86,6 +80,7 @@ def ready(
 # GET INVENTORY
 # --------------------------------------------------
 
+
 @app.get(
     "/inventory/{product_id}",
     response_model=InventoryItem,
@@ -95,12 +90,7 @@ def get_inventory(
     db: Session = Depends(get_db),
 ) -> InventoryModel:
 
-    item = db.scalar(
-        select(InventoryModel).where(
-            InventoryModel.product_id
-            == product_id
-        )
-    )
+    item = db.scalar(select(InventoryModel).where(InventoryModel.product_id == product_id))
 
     if not item:
         raise HTTPException(
@@ -115,6 +105,7 @@ def get_inventory(
 # RESERVE INVENTORY
 # --------------------------------------------------
 
+
 @app.post(
     "/inventory/reserve",
     response_model=InventoryItem,
@@ -124,12 +115,7 @@ def reserve_stock(
     db: Session = Depends(get_db),
 ) -> InventoryModel:
 
-    item = db.scalar(
-        select(InventoryModel).where(
-            InventoryModel.product_id
-            == payload.product_id
-        )
-    )
+    item = db.scalar(select(InventoryModel).where(InventoryModel.product_id == payload.product_id))
 
     if not item:
         raise HTTPException(

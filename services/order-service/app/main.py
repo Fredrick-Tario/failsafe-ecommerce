@@ -1,12 +1,10 @@
 import os
 import time
-
 from datetime import datetime, timezone
 from decimal import Decimal
 from uuid import uuid4
 
 import httpx
-
 from fastapi import (
     Depends,
     FastAPI,
@@ -14,25 +12,21 @@ from fastapi import (
     Request,
     status,
 )
-
 from fastapi.responses import JSONResponse
-
 from pydantic import BaseModel, Field
-
 from sqlalchemy import select, text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-
-from app.models import (
-    Order as OrderModel,
-    OrderItem as OrderItemModel,
-)
-
 from app.errors import ServiceError
 from app.logging_config import configure_logging
-
+from app.models import (
+    Order as OrderModel,
+)
+from app.models import (
+    OrderItem as OrderItemModel,
+)
 
 # --------------------------------------------------
 # LOGGING
@@ -71,6 +65,7 @@ DOWNSTREAM_TIMEOUT_SECONDS = 2.0
 # --------------------------------------------------
 # PYDANTIC SCHEMAS
 # --------------------------------------------------
+
 
 class OrderItemRequest(BaseModel):
     product_id: int
@@ -111,14 +106,12 @@ class Order(BaseModel):
 # DOWNSTREAM: INVENTORY
 # --------------------------------------------------
 
+
 def reserve_inventory(
     item: OrderItemRequest,
 ) -> None:
 
-    with httpx.Client(
-        timeout=DOWNSTREAM_TIMEOUT_SECONDS
-    ) as client:
-
+    with httpx.Client(timeout=DOWNSTREAM_TIMEOUT_SECONDS) as client:
         response = client.post(
             f"{INVENTORY_URL}/inventory/reserve",
             json={
@@ -134,15 +127,13 @@ def reserve_inventory(
 # DOWNSTREAM: PAYMENT
 # --------------------------------------------------
 
+
 def authorize_payment(
     order_id: str,
     amount: Decimal,
 ) -> str:
 
-    with httpx.Client(
-        timeout=DOWNSTREAM_TIMEOUT_SECONDS
-    ) as client:
-
+    with httpx.Client(timeout=DOWNSTREAM_TIMEOUT_SECONDS) as client:
         response = client.post(
             f"{PAYMENT_URL}/payments/authorize",
             json={
@@ -161,6 +152,7 @@ def authorize_payment(
 # HEALTH
 # --------------------------------------------------
 
+
 @app.get("/health")
 def health() -> dict:
 
@@ -173,6 +165,7 @@ def health() -> dict:
 # --------------------------------------------------
 # READINESS
 # --------------------------------------------------
+
 
 @app.get("/ready")
 def ready(
@@ -199,6 +192,7 @@ def ready(
 # CREATE ORDER
 # --------------------------------------------------
 
+
 @app.post(
     "/orders",
     response_model=Order,
@@ -210,10 +204,7 @@ def create_order(
 ) -> Order:
 
     total = sum(
-        (
-            item.quantity * item.unit_price
-            for item in payload.items
-        ),
+        (item.quantity * item.unit_price for item in payload.items),
         Decimal("0.00"),
     )
 
@@ -224,7 +215,6 @@ def create_order(
     # ----------------------------------------------
 
     try:
-
         for item in payload.items:
             reserve_inventory(item)
 
@@ -238,37 +228,24 @@ def create_order(
         )
 
     except httpx.HTTPStatusError as exc:
-
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=(
-                "Downstream service rejected request: "
-                f"{exc.response.status_code}"
-            ),
+            detail=(f"Downstream service rejected request: {exc.response.status_code}"),
         ) from exc
 
     except httpx.RequestError as exc:
-
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail=(
-                "Required downstream service unavailable"
-            ),
+            detail=("Required downstream service unavailable"),
         ) from exc
-
 
     # ----------------------------------------------
     # STEP 3: DETERMINE ORDER STATUS
     # ----------------------------------------------
 
-    final_status = (
-        "CONFIRMED"
-        if payment_status == "APPROVED"
-        else "PAYMENT_DECLINED"
-    )
+    final_status = "CONFIRMED" if payment_status == "APPROVED" else "PAYMENT_DECLINED"
 
     created_at = datetime.now(timezone.utc)
-
 
     # ----------------------------------------------
     # STEP 4: CREATE ORDER DATABASE RECORD
@@ -284,7 +261,6 @@ def create_order(
 
     db.add(db_order)
 
-
     # ----------------------------------------------
     # STEP 5: CREATE ORDER ITEM RECORDS
     # ----------------------------------------------
@@ -292,7 +268,6 @@ def create_order(
     db_items = []
 
     for item in payload.items:
-
         db_item = OrderItemModel(
             order_id=order_id,
             product_id=item.product_id,
@@ -304,24 +279,20 @@ def create_order(
 
     db.add_all(db_items)
 
-
     # ----------------------------------------------
     # STEP 6: SAVE EVERYTHING
     # ----------------------------------------------
 
     try:
-
         db.commit()
 
     except SQLAlchemyError:
-
         db.rollback()
 
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to save order",
         )
-
 
     # ----------------------------------------------
     # STEP 7: RETURN API RESPONSE
@@ -341,6 +312,7 @@ def create_order(
 # GET ORDER
 # --------------------------------------------------
 
+
 @app.get(
     "/orders/{order_id}",
     response_model=Order,
@@ -356,27 +328,18 @@ def get_order(
     )
 
     if not db_order:
-
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Order not found",
         )
 
-
     # ----------------------------------------------
     # QUERY ORDER ITEMS
     # ----------------------------------------------
 
-    statement = select(
-        OrderItemModel
-    ).where(
-        OrderItemModel.order_id == order_id
-    )
+    statement = select(OrderItemModel).where(OrderItemModel.order_id == order_id)
 
-    db_items = db.scalars(
-        statement
-    ).all()
-
+    db_items = db.scalars(statement).all()
 
     # ----------------------------------------------
     # CONVERT ORM ITEMS TO API RESPONSE
@@ -391,7 +354,6 @@ def get_order(
         for item in db_items
     ]
 
-
     return Order(
         id=db_order.id,
         customer_id=db_order.customer_id,
@@ -405,6 +367,7 @@ def get_order(
 # --------------------------------------------------
 # SERVICE ERROR HANDLER
 # --------------------------------------------------
+
 
 @app.exception_handler(ServiceError)
 async def service_error_handler(
@@ -427,6 +390,7 @@ async def service_error_handler(
 # REQUEST LOGGING MIDDLEWARE
 # --------------------------------------------------
 
+
 @app.middleware("http")
 async def request_logging(
     request: Request,
@@ -442,22 +406,12 @@ async def request_logging(
 
     response = await call_next(request)
 
-    duration_ms = (
-        time.perf_counter() - started
-    ) * 1000
+    duration_ms = (time.perf_counter() - started) * 1000
 
-    response.headers[
-        "X-Request-ID"
-    ] = request_id
+    response.headers["X-Request-ID"] = request_id
 
     logger.info(
-        (
-            "request_id=%s "
-            "method=%s "
-            "path=%s "
-            "status=%s "
-            "duration_ms=%.2f"
-        ),
+        ("request_id=%s method=%s path=%s status=%s duration_ms=%.2f"),
         request_id,
         request.method,
         request.url.path,

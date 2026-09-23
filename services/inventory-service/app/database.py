@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-
 # Load the .env file belonging to this service.
 ENV_FILE = Path(__file__).resolve().parent.parent / ".env"
 load_dotenv(ENV_FILE)
@@ -33,7 +32,9 @@ def get_db():
         yield db
     finally:
         db.close()
-        
-# for dir in services/inventory-service/app services/order-service/app services/payment-service/app services/product-service/app; do
+
+
+# for dir in services/inventory-service/app services/order-service/app
+# services/payment-service/app services/product-service/app; do
 #     cp services/auth-service/app/database.py "$dir/"
 # done

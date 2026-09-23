@@ -14,7 +14,9 @@ def require_local(url: str) -> None:
             if not ipaddress.ip_address(host).is_loopback:
                 raise ValueError
         except ValueError as exc:
-            raise SystemExit("Refusing non-local target. This learning tool only targets localhost.") from exc
+            raise SystemExit(
+                "Refusing non-local target. This learning tool only targets localhost."
+            ) from exc
 
 
 def main() -> None:
@@ -47,7 +49,7 @@ def main() -> None:
         require_local(url)
         for i in range(20):
             response = httpx.get(url, timeout=2)
-            print(f"request={i+1} status={response.status_code}")
+            print(f"request={i + 1} status={response.status_code}")
             time.sleep(0.05)
 
 

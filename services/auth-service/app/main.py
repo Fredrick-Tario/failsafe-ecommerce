@@ -17,7 +17,6 @@ from app.security import (
     verify_password,
 )
 
-
 app = FastAPI(
     title="FailSafe Auth Service",
     version="0.1.0",
@@ -29,6 +28,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 # --------------------------------------------------
 # HEALTH CHECK
 # --------------------------------------------------
+
 
 @app.get("/health")
 def health() -> dict:
@@ -46,6 +46,7 @@ def health() -> dict:
 # --------------------------------------------------
 # READINESS CHECK
 # --------------------------------------------------
+
 
 @app.get("/ready")
 def ready(db: Session = Depends(get_db)) -> dict:
@@ -73,6 +74,7 @@ def ready(db: Session = Depends(get_db)) -> dict:
 # REGISTER
 # --------------------------------------------------
 
+
 @app.post(
     "/register",
     response_model=UserPublic,
@@ -83,11 +85,7 @@ def register(
     db: Session = Depends(get_db),
 ) -> UserPublic:
 
-    existing_user = db.scalar(
-        select(UserModel).where(
-            UserModel.username == user.username
-        )
-    )
+    existing_user = db.scalar(select(UserModel).where(UserModel.username == user.username))
 
     if existing_user:
         raise HTTPException(
@@ -115,6 +113,7 @@ def register(
 # LOGIN / TOKEN
 # --------------------------------------------------
 
+
 @app.post("/token", response_model=Token)
 def login(
     form: Annotated[
@@ -124,11 +123,7 @@ def login(
     db: Session = Depends(get_db),
 ) -> Token:
 
-    user = db.scalar(
-        select(UserModel).where(
-            UserModel.username == form.username
-        )
-    )
+    user = db.scalar(select(UserModel).where(UserModel.username == form.username))
 
     if not user:
         raise HTTPException(
@@ -147,18 +142,15 @@ def login(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    access_token = create_access_token(
-        user.username
-    )
+    access_token = create_access_token(user.username)
 
-    return Token(
-        access_token=access_token
-    )
+    return Token(access_token=access_token)
 
 
 # --------------------------------------------------
 # CURRENT USER
 # --------------------------------------------------
+
 
 @app.get(
     "/users/me",
@@ -189,11 +181,7 @@ def current_user(
     except InvalidTokenError:
         raise credentials_error
 
-    user = db.scalar(
-        select(UserModel).where(
-            UserModel.username == username
-        )
-    )
+    user = db.scalar(select(UserModel).where(UserModel.username == username))
 
     if not user:
         raise credentials_error

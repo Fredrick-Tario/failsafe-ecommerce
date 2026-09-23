@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
+import re
 from collections import Counter
 from pathlib import Path
-import re
 
 ROOT = Path(__file__).resolve().parents[2]
 LOG_DIR = ROOT / "logs"

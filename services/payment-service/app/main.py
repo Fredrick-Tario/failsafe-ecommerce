@@ -11,7 +11,6 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Payment as PaymentModel
 
-
 app = FastAPI(
     title="FailSafe Payment Service",
     version="0.1.0",
@@ -21,6 +20,7 @@ app = FastAPI(
 # --------------------------------------------------
 # PYDANTIC SCHEMAS
 # --------------------------------------------------
+
 
 class PaymentRequest(BaseModel):
     order_id: str = Field(
@@ -40,9 +40,7 @@ class PaymentRequest(BaseModel):
 
 
 class PaymentResult(BaseModel):
-    model_config = ConfigDict(
-        from_attributes=True
-    )
+    model_config = ConfigDict(from_attributes=True)
 
     payment_id: str
     order_id: str
@@ -53,6 +51,7 @@ class PaymentResult(BaseModel):
 # --------------------------------------------------
 # HEALTH CHECK
 # --------------------------------------------------
+
 
 @app.get("/health")
 def health() -> dict:
@@ -65,6 +64,7 @@ def health() -> dict:
 # --------------------------------------------------
 # READINESS CHECK
 # --------------------------------------------------
+
 
 @app.get("/ready")
 def ready(
@@ -91,6 +91,7 @@ def ready(
 # AUTHORIZE PAYMENT
 # --------------------------------------------------
 
+
 @app.post(
     "/payments/authorize",
     response_model=PaymentResult,
@@ -100,11 +101,7 @@ def authorize_payment(
     db: Session = Depends(get_db),
 ) -> PaymentResult:
 
-    payment_status = (
-        "APPROVED"
-        if payload.amount <= Decimal("50000.00")
-        else "DECLINED"
-    )
+    payment_status = "APPROVED" if payload.amount <= Decimal("50000.00") else "DECLINED"
 
     payment_id = str(uuid4())
 
