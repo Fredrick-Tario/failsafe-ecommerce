@@ -1,36 +1,36 @@
 variable "name" {
-    type        = string
+  type = string
 }
 
 variable "resource_group_name" {
-    type        = string
+  type = string
 }
 
 variable "location" {
-    type        = string
+  type = string
 }
 
 variable "address_space" {
-    type        = list(string)
+  type = list(string)
 }
 
 variable "tags" {
-    type        = map(string)
-    default     = {}
+  type    = map(string)
+  default = {}
 }
 
 resource "azurerm_virtual_network" "this" {
-    name                = var.name
-    resource_group_name = var.resource_group_name
-    location            = var.location
-    address_space       = var.address_space
-    tags                = var.tags
+  name                = var.name
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  address_space       = var.address_space
+  tags                = var.tags
 }
 
 output "name" {
-    value = azurerm_virtual_network.this.name
+  value = azurerm_virtual_network.this.name
 }
 
 output "id" {
-    value = azurerm_virtual_network.this.id
+  value = azurerm_virtual_network.this.id
 }

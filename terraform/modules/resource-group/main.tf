@@ -1,27 +1,27 @@
 variable "name" {
-    type        = string
+  type = string
 }
 
 variable "location" {
-    type        = string
+  type = string
 }
 
 variable "tags" {
-    type        = map(string)
-    default     = {}
+  type    = map(string)
+  default = {}
 }
 
 resource "azurerm_resource_group" "this" {
-    name     = var.name
-    location = var.location
-    tags     = var.tags
+  name     = var.name
+  location = var.location
+  tags     = var.tags
 }
 
 output "name" {
-    value = azurerm_resource_group.this.name
+  value = azurerm_resource_group.this.name
 }
 
 output "id" {
-    value = azurerm_resource_group.this.id
+  value = azurerm_resource_group.this.id
 }
 
