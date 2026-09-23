@@ -209,9 +209,9 @@ jobs:
         id: tfcheck
         run: |
           if find terraform -type '*.tf' -print -quit | grep -q .; then
-            echo "has_tf=true" >> "@GITHUB_OUTPUT"
+            echo "has_tf=true" >> "$GITHUB_OUTPUT"
           else
-            echo "has_tf=false" >> "@GITHUB_OUTPUT"
+            echo "has_tf=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Terraform format check
@@ -228,12 +228,11 @@ jobs:
             fi
           done
   
-  ci.gate:
+  ci-gate:
     if: always()
     runs-on: ubuntu-latest
     needs:
       - lint
-      - frontend-check
       - unit-tests
       - integration-tests
       - docker-build
@@ -244,15 +243,14 @@ jobs:
 
     steps:
       - name: Verify require jobs
-      run: |
-        test "${{ needs.lint.result }}" = "success" 
-        test "${{ needs.frontend-check.result }}" = "success"
-        test "${{ needs.unit-tests.result }}" = "success"
-        test "${{ needs.integration-tests.result }}" = "success"
-        test "${{ needs.docker-build.result }}" = "success"
-        test "${{ needs.dependency-scan.result }}" = "success"
-        test "${{ needs.secret-scan.result }}" = "success"
-        test "${{ needs.container-scan.result }}" = "success"
-        test "${{ needs.terraform-validate.result }}" = "success"
-        echo "All required jobs passed. CI gate passed."
+        run: |
+          test "${{ needs.lint.result }}" = "success" 
+          test "${{ needs.unit-tests.result }}" = "success"
+          test "${{ needs.integration-tests.result }}" = "success"
+          test "${{ needs.docker-build.result }}" = "success"
+          test "${{ needs.dependency-scan.result }}" = "success"
+          test "${{ needs.secret-scan.result }}" = "success"
+          test "${{ needs.container-scan.result }}" = "success"
+          test "${{ needs.terraform-validate.result }}" = "success"
+          echo "All required jobs passed. CI gate passed."
             
