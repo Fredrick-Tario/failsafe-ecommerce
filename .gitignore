@@ -47,3 +47,4 @@ Thumbs.db
 reports/
 coverage.xml
 EOF
+terraform-state-backup.json
