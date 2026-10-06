@@ -39,6 +39,16 @@ module "mgmt_subnet" {
   address_prefixes     = [var.mgmt_subnet_cidr]
 }
 
+module "monitoring_nat" {
+  count               = var.enable_nat_gateway ? 1 : 0
+  source              = "../../modules/nat-gateway"
+  name                = "nat-failsafe-monitoring-${var.environment}"
+  resource_group_name = module.resource_group.name
+  location            = var.location
+  subnet_id           = module.monitoring_subnet.id
+  tags                = local.tags
+}
+
 module "mgmt_nsg" {
   source              = "../../modules/nsg"
   name                = "nsg-failsafe-mgmt-${var.environment}"
@@ -98,3 +108,4 @@ module "linux_vm" {
   ssh_public_key_path = var.ssh_public_key_path
   tags                = local.tags
 }
+
