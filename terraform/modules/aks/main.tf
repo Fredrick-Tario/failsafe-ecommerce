@@ -54,6 +54,8 @@ resource "azurerm_kubernetes_cluster" "this" {
 
   network_profile {
     network_plugin = "azure"
+    load_balancer_sku = "standard"
+    outbound_type = "loadBalancer"
   }
 }
 

@@ -49,6 +49,16 @@ variable "enable_vm" {
   default = false
 }
 
+variable "enable_private_dns" {
+  type    = bool
+  default = false
+}
+
+variable "enable_nat_gateway" {
+  type    = bool
+  default = false
+}
+
 variable "vnet_cidr" {
   type    = string
   default = "10.10.0.0/16"
@@ -72,14 +82,4 @@ variable "database_subnet_cidr" {
 variable "monitoring_subnet_cidr" {
   type    = string
   default = "10.10.4.0/24"
-}
-
-variable "enable_private_dns" {
-  type    = bool
-  default = false
-}
-
-variable "enable_nat_gateway" {
-  type    = bool
-  default = false
 }
