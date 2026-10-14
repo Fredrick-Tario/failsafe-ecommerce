@@ -1,0 +1,4 @@
+---
+failsafe_admin_user:  azureuser
+failsafe_ops_group:   failsafeops
+ssh_port: 22

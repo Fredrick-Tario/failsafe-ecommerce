@@ -1,0 +1,13 @@
+---
+- name: Add FailSafe SSH hardening settings
+  ansible.builtin.copy:
+    dest: /etc/ssh/sshd_config.d/99-failsafe.conf
+    owner:  root
+    group:  root
+    mode:  "0644"
+    content:  |
+      PasswordAuthentication  no
+      PermitRootLogin no
+      PubkeyAuthentication  yes
+      MaxAuthTries  3
+  notify: Restart SSH

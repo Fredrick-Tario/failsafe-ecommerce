@@ -1,0 +1,15 @@
+---
+- name: Install system monitoring utilities
+  ansible.builtin.apt:
+    name:
+      - htop
+      - sysstat
+      - iotop
+      - ncdu
+    state: present
+
+- name: Enable sysstat
+  ansible.builtin.service:
+    name: sysstat
+    state: started
+    enabled: true

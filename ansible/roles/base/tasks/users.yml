@@ -1,0 +1,11 @@
+---
+- name: Create operations group
+  ansible.builtin.group:
+      name: "{{ failsafe_ops_group  }}"
+      state:  present
+
+- name: Add admin user to operations group
+  ansible.builtin.user:
+    name: "{{ failsafe_admin_user }}"
+    groups: "{{ failsafe_ops_group  }}"
+    append: true

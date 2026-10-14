@@ -1,0 +1,24 @@
+---
+- name: Create FailSafe log directory
+  ansible.builtin.file:
+    path: /var/log/failsafe
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Configure FailSafe log rotation
+  ansible.builtin.copy:
+    dest: /etc/logrotate.d/failsafe
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      /var/log/failsafe/*.log {
+          daily
+          rotate 7
+          compress
+          missingok
+          notifempty
+          copytruncate
+      }

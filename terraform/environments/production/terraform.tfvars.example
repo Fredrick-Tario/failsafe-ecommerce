@@ -2,7 +2,7 @@ subscription_id     =   "00000000-0000-0000-0000-000000000000"
 location            =   "southeastasia"
 environment         =   "prod"
 unique_suffix       =   "fse01"
-admin_cidr          =   "112.208.183.103/32"
+admin_cidr          =   "112.202.163.171/32"
 ssh_public_key_path =   "~/.ssh/id_ed25519.pub"
 
 # Keep every paid workload service disabled for the first cost-safe apply

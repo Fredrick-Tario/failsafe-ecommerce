@@ -1,0 +1,24 @@
+---
+- name: Configure users and groups
+  ansible.builtin.import_tasks: users.yml
+
+- name: Install base packages
+  ansible.builtin.import_tasks: packages.yml
+
+- name: Harden SSH
+  ansible.builtin.import_tasks: ssh.yml
+
+- name: Configure firewall
+  ansible.builtin.import_tasks: firewall.yml
+
+- name: Install Docker
+  ansible.builtin.import_tasks: docker.yml
+
+- name: Install monitoring tools
+  ansible.builtin.import_tasks: monitoring.yml
+
+- name: Configure log rotation
+  ansible.builtin.import_tasks: logrotate.yml
+
+- name: Configure basic security    
+  ansible.builtin.import_tasks: security.yml

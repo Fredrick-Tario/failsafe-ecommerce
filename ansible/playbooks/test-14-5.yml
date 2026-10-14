@@ -1,0 +1,15 @@
+---
+- name: Test FailSafe Steps 14.4 and 14.5
+  hosts: management
+  become: true
+
+  tasks:
+    - name: Run users configuration
+      ansible.builtin.include_role:
+        name: base
+        tasks_from: users
+
+    - name: Run SSH configuration
+      ansible.builtin.include_role:
+        name: base
+        tasks_from: ssh

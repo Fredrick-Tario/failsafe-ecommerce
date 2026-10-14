@@ -1,0 +1,15 @@
+---
+- name: Install base administration packages
+  ansible.builtin.apt:
+    name:
+      - python3
+      - python3-pip
+      - git
+      - curl
+      - jq
+      - unzip
+      - dnsutils
+      - traceroute
+      - tcpdump
+    state: present
+    update_cache: true

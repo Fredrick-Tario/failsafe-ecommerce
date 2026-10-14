@@ -1,0 +1,6 @@
+---
+- name: Configure FailSafe management VM
+  hosts: management
+  become: true
+  roles:
+    - base

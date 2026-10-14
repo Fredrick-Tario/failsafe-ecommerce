@@ -1,0 +1,18 @@
+---
+- name: Install Docker Engine
+  ansible.builtin.apt:
+    name: docker.io
+    state: present
+    update_cache: true
+
+- name: Enable and start Docker
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Add admin user to docker group
+  ansible.builtin.user:
+    name: "{{ failsafe_admin_user }}"
+    groups: docker
+    append: true
