@@ -7,9 +7,6 @@ if [ -f .env ]; then
     set +a
 fi
 
-DB_PASSWORD="${POSTGRES_PASSWORD:-failsafe_ci_password}"
-DB_USER="${POSTGRES_USER:-failsafe-app}"
-
 write_env() {
     local service=$1
     local database=$2
