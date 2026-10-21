@@ -5,6 +5,7 @@ on:
     branches: [main]
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -116,7 +117,7 @@ jobs:
           docker compose exec -T postgres \
             psql -U "$POSTGRES_USER" \
             -d failsafe_inventory \
-            < database/seeds/prodcut.sql
+            < database/seeds/product.sql
 
       - name: Run integration tests
         run: pytest tests/integration -q
