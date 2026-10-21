@@ -59,7 +59,18 @@ jobs:
           done
 
       - name: Run unit and API tests
-        run: pytest services -q
+        run: |
+          for service in services/*-service;  do
+            if [ -d "$service/tests" ] && find "$service/tests" -type f -name 'test_*.py' -print -quit 2>/dev/null | grep -q .; then
+              echo "Testing $service"
+              (
+                cd "$service"
+                PYTHONPATH=. python -m pytest tests -q
+              )
+            else
+              echo "Skipping $service because no tests exist yet"
+            fi
+          done
 
   integration-tests:
     runs-on: ubuntu-latest
@@ -94,6 +105,18 @@ jobs:
           docker compose exec -T inventory-service alembic upgrade head
           docker compose exec -T order-service alembic upgrade head
           docker compose exec -T payment-service alembic upgrade head
+      
+      - name: Seed the integration test data
+        run: |
+          docker compose exec -T postgres \
+            psql -U "$POSTGRES_USER" \
+            -d failsafe_inventory \
+            < /seeds/inventory.sql
+
+          docker compose exec -T postgres \
+            psql -U "$POSTGRES_USER" \
+            -d failsafe_inventory \
+            </seeds/prodcut.sql
 
       - name: Run integration tests
         run: pytest tests/integration -q

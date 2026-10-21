@@ -6,7 +6,7 @@ SERVICES=(
     "product|http://127.0.0.1:8002/health"
     "inventory|http://127.0.0.1:8003/health"
     "order|http://127.0.0.1:8004/health"
-    "payment|http://127.0.0.1:8006/health"
+    "payment|http://127.0.0.1:8005/health"
 )
 
 failures = 0

@@ -106,10 +106,9 @@ def authorize_payment(
     payment_id = str(uuid4())
 
     payment = PaymentModel(
-        payment_id=payment_id,
+        id=payment_id,
         order_id=payload.order_id,
         amount=payload.amount,
-        payment_method=payload.payment_method,
         status=payment_status,
         created_at=datetime.now(timezone.utc),
     )
@@ -119,7 +118,7 @@ def authorize_payment(
     db.refresh(payment)
 
     return PaymentResult(
-        payment_id=payment.payment_id,
+        payment_id=payment.id,
         order_id=payment.order_id,
         status=payment.status,
         amount=payment.amount,

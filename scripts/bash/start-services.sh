@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 services=(auth-service product-service inventory-service order-service payment-service)
-ports=(8001 8002 8003 8004 8006)
+ports=(8001 8002 8003 8004 8005)
 
 for i in "${!services[@]}"; do
 	service="${services[$i]}"

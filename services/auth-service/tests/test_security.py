@@ -1,6 +1,6 @@
 import os
 
-os.environ.setdefault("AUTH_SECRET_KEY", "test-secret-key")
+os.environ.setdefault("AUTH_SECRET_KEY", "failsafe-ci-test-secret-key-32chars")
 
 from app.security import (
     create_access_token,

@@ -17,12 +17,14 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql
       - ./database/init:/docker-entrypoint-initdb.d:ro
+      - ./database/seeds:/seeds:ro
 
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d postgres"]
       interval: 5s
       timeout: 3s
-      retries: 5
+      retries: 10
+      start_period: 10s
 
     networks:
       - failsafe-net
@@ -142,7 +144,7 @@ services:
 
     environment:
       INVENTORY_URL: http://inventory-service:8003
-      PAYMENT_URL: http://payment-service:8006
+      PAYMENT_URL: http://payment-service:8005
 
     depends_on:
       postgres:
@@ -209,6 +211,18 @@ services:
 
     ports:
       - "8000:80"
+
+    depends_on:
+      auth-service:
+        condition:  service_healthy
+      product-service:
+        condition:  service_healthy
+      inventory-service:
+        condition:  service_healthy
+      order-service:
+        condition:  service_healthy
+      payment-service:
+        condition: service_healthy
 
     networks:
       - failsafe-net

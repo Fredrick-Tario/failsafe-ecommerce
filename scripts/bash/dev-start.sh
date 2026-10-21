@@ -29,7 +29,7 @@ start_service auth 8001 services/auth-service
 start_service product 8002 services/product-service
 start_service inventory 8003 services/inventory-service
 start_service order 8004 services/order-service
-start_service payment 8006 services/payment-service
+start_service payment 8005 services/payment-service
 
 sleep 1
 "$ROOT_DIR/scripts/bash/health-check.sh"

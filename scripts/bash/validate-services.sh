@@ -14,7 +14,7 @@ check_port() {
   fi
 }
 
-for port in 8001 8002 8003 8004 8006; do
+for port in 8001 8002 8003 8004 8005; do
   check_port "$port"
 done
 
