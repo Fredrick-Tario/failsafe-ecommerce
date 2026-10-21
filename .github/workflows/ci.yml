@@ -75,10 +75,10 @@ jobs:
   integration-tests:
     runs-on: ubuntu-latest
     env:
-      POSTGRES_USER: failsafe_app
-      POSTGRES_PASSWORD: failsafe_ci_password
+      POSTGRES_USER: failsafe-app
+      POSTGRES_PASSWORD: ${{ secrets.CI_POSTGRES_PASSWORD }}
       GRAFANA_ADMIN_USER: admin
-      GRAFANA_ADMIN_PASSWORD: admin-ci-only
+      GRAFANA_ADMIN_PASSWORD: ${{ secrets.CI_GRAFANA_PASSWORD }}
     
     steps:
       - name: Checkout repository

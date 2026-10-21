@@ -7,6 +7,9 @@ if [ -f .env ]; then
     set +a
 fi
 
+: "${POSTGRES_USER:?POSTGRES_USER is required}"
+: "${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}"
+
 write_env() {
     local service=$1
     local database=$2
