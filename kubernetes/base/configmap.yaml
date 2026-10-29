@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: failsafe-config
+  namespace: failsafe-dev
+data:
+  APP_ENV: "dev"
+  INVENTORY_URL: "http://inventory-service:8003"
+  PAYMENT_URL: "http://paymeny-service:8005"
+  DOWNSTREAM_TIMEOUT_SECONDS: "2.0"
