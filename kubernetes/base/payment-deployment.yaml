@@ -20,7 +20,7 @@ spec:
           image: acrfailsafedevfse01.azurecr.io/failsafe-payment:0.1.0
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8004
+            - containerPort: 8005
           env:
             - name: POSTGRES_USER
               valueFrom:
@@ -44,7 +44,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /health
-              port: 8003
+              port: 8005
             initialDelaySeconds: 10
             periodSeconds: 15
             timeoutSeconds: 2
@@ -52,7 +52,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /ready
-              port: 8003
+              port: 8005
             initialDelaySeconds: 5
             periodSeconds: 10
             timeoutSeconds: 2

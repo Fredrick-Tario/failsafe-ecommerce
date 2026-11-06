@@ -13,7 +13,7 @@ spec:
     metadata:
       labels:
         app: frontend-service
-        tier: backend
+        tier: frontend
     spec:
       containers:
         - name: frontend-service

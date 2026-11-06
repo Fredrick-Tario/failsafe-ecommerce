@@ -33,7 +33,22 @@ spec:
                   name: failsafe-secrets
                   key: POSTGRES_PASSWORD
             - name: DATABASE_URL
-              value: "postgresql+psycopg://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgres-service:5432/failsafe_inventory"
+              value: "postgresql+psycopg://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgres-service:5432/failsafe_order"
+            - name: INVENTORY_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: failsafe-config
+                  key:  INVENTORY_URL
+            - name: PAYMENT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: failsafe-config
+                  key:  PAYMENT_URL
+            - name: DOWNSTREAM_TIMEOUT_SECONDS
+              valueFrom:
+                configMapKeyRef:
+                  name: failsafe-config
+                  key:  DOWNSTREAM_TIMEOUT_SECONDS
           resources:
             requests:
               cpu: "100m"
@@ -44,7 +59,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /health
-              port: 8003
+              port: 8004
             initialDelaySeconds: 10
             periodSeconds: 15
             timeoutSeconds: 2
@@ -52,7 +67,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /ready
-              port: 8003
+              port: 8004
             initialDelaySeconds: 5
             periodSeconds: 10
             timeoutSeconds: 2

@@ -33,7 +33,7 @@ spec:
                   name: failsafe-secrets
                   key: POSTGRES_PASSWORD
             - name: DATABASE_URL
-              value: "postgresql+pyscopg://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgres-service:5432/failsafe_product"
+              value: "postgresql+psycopg://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgres-service:5432/failsafe_product"
           resources:
             requests:
               cpu: "100m"

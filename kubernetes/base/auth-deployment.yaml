@@ -38,7 +38,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: failsafe-secrets
-                  key: AUTH-SECRET-KEY
+                  key: AUTH_SECRET_KEY
           resources:
             requests:
               cpu: "100m"

@@ -58,12 +58,12 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - ps_isready -U "$POSTGRES_USER"  -d  postgres
+                - pg_isready -U "$POSTGRES_USER"  -d  postgres
             initialDelaySeconds: 5
             periodSeconds: 5
           volumeMounts:
             - name: postgres-data
-              mountPath: /var/lib/postgresql/data
+              mountPath: /var/lib/postgresql
             - name: postgres-init
               mountPath: /docker-entrypoint-initdb.d
       volumes:

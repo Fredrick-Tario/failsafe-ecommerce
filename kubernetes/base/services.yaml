@@ -41,7 +41,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: invetory-service
+  name: inventory-service
   namespace: failsafe-dev
 spec:
   type: ClusterIP
