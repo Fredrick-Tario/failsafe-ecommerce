@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: payment-service
-          image: acrfailsafedevfse01.azurecr.io/failsafe-payment:0.1.0
+          image: acrfailsafedevfse01.azurecr.io/failsafe/payment:v0.1.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8005

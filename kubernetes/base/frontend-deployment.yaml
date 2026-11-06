@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: frontend-service
-          image: acrfailsafedevfse01.azurecr.io/failsafe-frontend:0.1.0
+          image: acrfailsafedevfse01.azurecr.io/failsafe/frontend:v0.1.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80

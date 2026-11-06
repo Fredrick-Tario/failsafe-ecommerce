@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: inventory-service
-          image: acrfailsafedevfse01.azurecr.io/failsafe-inventory:0.1.0
+          image: acrfailsafedevfse01.azurecr.io/failsafe/inventory:v0.1.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8003

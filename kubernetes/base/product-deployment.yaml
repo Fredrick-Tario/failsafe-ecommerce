@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: product-service
-          image: acrfailsafedevfse01.azurecr.io/failsafe-product:0.1.0
+          image: acrfailsafedevfse01.azurecr.io/failsafe/product:v0.1.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8002
