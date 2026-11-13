@@ -89,26 +89,6 @@ The latest visible work is on the AKS foundation. The most useful next work is t
 - [ ] Deployment cost comparison and reproducible cost-saving teardown
 - [ ] Demonstrate one complete incident: detection → diagnosis → mitigation → postmortem
 
-## Known Gaps to Validate
-
-The following were identified by reviewing the checked-in files. They are included here so the roadmap is honest and useful; they are **not proof of a currently running outage**.
-
-1. **Gateway manifest key:** [`kubernetes/base/gateway.yaml`](kubernetes/base/gateway.yaml) uses `apiversion`; Kubernetes expects `apiVersion`. Correct this before applying.
-2. **Reverse-proxy paths:** [`frontend/nginx.conf`](frontend/nginx.conf) forwards `/api/...` paths to backends without rewriting the prefix, while the APIs expose paths such as `/products` and `/orders`. The payment location also uses `/api/payments/` while the frontend health check calls `/api/payment/health`. Validate and align the routes.
-3. **Health-check shell syntax:** [`scripts/bash/health-check.sh`](scripts/bash/health-check.sh) contains `failures = 0`; Bash assignment requires `failures=0`.
-4. **Local setup configuration:** The root [`.env.example`](.env.example) is missing variables required by Compose. Service-specific `.env` files also need correct database URLs and an auth secret. Keep these local and document a repeatable setup flow.
-5. **Monitoring is scaffolded, not complete:** [`monitoring/prometheus/prometheus.yml`](monitoring/prometheus/prometheus.yml) currently scrapes Prometheus itself, while Grafana has a datasource definition but no service dashboards tracked in the repo.
-6. **Generated files in version control:** Review tracked backup dumps and Terraform plan artifacts before sharing the repository widely; avoid checking in sensitive runtime data or generated state.
-
-## Progress Update Rules
-
-When completing a milestone:
-
-1. Check off the specific task **after** validating it, not only after writing the files.
-2. Move the milestone from **Current** to **Done** once it is repeatable.
-3. Add the exact validation command or a link to a runbook if it would help someone reproduce the result.
-4. Keep the **README** high-level; put detailed, frequently changing status here.
-
 ---
 
 **Project principle:** Every tool should support a real engineering outcome: faster delivery, safer changes, better visibility, or more reliable recovery.
